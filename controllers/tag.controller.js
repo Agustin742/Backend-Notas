@@ -3,7 +3,6 @@ import services from '../services/tag.service.js'
 const getAll = async (req, res) => {
   try {
     const todosLosProductos = await services.obtenerProductos()
-    res.json(todosLosProductos)
     
     res.json({
       ok: true,
