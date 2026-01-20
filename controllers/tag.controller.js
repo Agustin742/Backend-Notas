@@ -32,18 +32,41 @@ const getOne = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const productoPorCrear = req.body
-    const productoGuardado = await services.guardarProducto(productoPorCrear)
+    const tags = req.body
+
+    // Validación mínima
+    if (!Array.isArray(tags)) {
+      return res.status(400).json({
+        ok: false,
+        message: 'Se esperaba un array de tags'
+      })
+    }
+
+    const tagsGuardados = []
+
+    for (const tag of tags) {
+      const tagGuardado = await services.guardarProducto({
+        name: tag.name,
+        color: tag.color
+      })
+
+      tagsGuardados.push(tagGuardado)
+    }
 
     res.status(201).json({
-      ok:true,
-      data: productoGuardado
+      ok: true,
+      data: tagsGuardados
     })
 
   } catch (error) {
-    console.log(error);
+    console.error(error)
+    res.status(500).json({
+      ok: false,
+      message: 'Error al crear tags'
+    })
   }
 }
+
 
 const edit = async (req, res) => {
   const id = req.params.id
